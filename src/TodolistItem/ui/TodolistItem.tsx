@@ -8,17 +8,31 @@ type Props = {
   deleteTask: (task: string) => void
   changeFilter: (filterValue: FilterValues) => void
   createTask: (title: string) => void
+  changeTaskStatus: (taskId: string, isDone: boolean) => void
 }
 
-export const TodolistItem = ({ title, tasks, deleteTask, changeFilter, createTask }: Props) => {
+export const TodolistItem = ({
+  title,
+  tasks,
+  deleteTask,
+  changeFilter,
+  createTask,
+  changeTaskStatus,
+}: Props) => {
   const [taskTitle, setTaskTitle] = useState<string>('')
+
   const changeTaskTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
     setTaskTitle(event.currentTarget.value)
   }
+
   const createTaskHandler = () => {
-    createTask(taskTitle)
-    setTaskTitle('')
+    const trimmedTitle = taskTitle.trim()
+    if (trimmedTitle !== '') {
+      createTask(trimmedTitle)
+      setTaskTitle('')
+    }
   }
+
   const createTaskOnEnterHandler = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       createTaskHandler()
@@ -43,10 +57,13 @@ export const TodolistItem = ({ title, tasks, deleteTask, changeFilter, createTas
             const deleteTaskHandler = () => {
               deleteTask(task.id)
             }
+            const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
+              changeTaskStatus(task.id, e.currentTarget.checked)
+            }
             return (
               <li key={task.id}>
                 <Button onClick={deleteTaskHandler}>X</Button>
-                <input type="checkbox" checked={task.isDone} />
+                <input type="checkbox" checked={task.isDone} onChange={changeTaskStatusHandler} />
                 <span>{task.title}</span>
               </li>
             )
