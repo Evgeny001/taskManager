@@ -5,6 +5,7 @@ import { ChangeEvent, useState, type KeyboardEvent } from 'react'
 type Props = {
   title: string
   tasks: Task[]
+  filter: FilterValues
   deleteTask: (task: string) => void
   changeFilter: (filterValue: FilterValues) => void
   createTask: (title: string) => void
@@ -14,15 +15,18 @@ type Props = {
 export const TodolistItem = ({
   title,
   tasks,
+  filter,
   deleteTask,
   changeFilter,
   createTask,
   changeTaskStatus,
 }: Props) => {
   const [taskTitle, setTaskTitle] = useState<string>('')
+  const [error, setError] = useState<string | null>(null)
 
   const changeTaskTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
     setTaskTitle(event.currentTarget.value)
+    setError(null)
   }
 
   const createTaskHandler = () => {
@@ -30,6 +34,8 @@ export const TodolistItem = ({
     if (trimmedTitle !== '') {
       createTask(trimmedTitle)
       setTaskTitle('')
+    } else {
+      setError('Title is required')
     }
   }
 
@@ -46,8 +52,10 @@ export const TodolistItem = ({
           onChange={changeTaskTitleHandler}
           value={taskTitle}
           onKeyDown={createTaskOnEnterHandler}
+          className={error ? 'error' : ''}
         />
         <button onClick={createTaskHandler}>+</button>
+        {error && <div className={'error-message'}>{error}</div>}
       </div>
       {tasks.length === 0 ? (
         'Тасок нет'
@@ -61,7 +69,7 @@ export const TodolistItem = ({
               changeTaskStatus(task.id, e.currentTarget.checked)
             }
             return (
-              <li key={task.id}>
+              <li key={task.id} className={task.isDone ? 'is-done' : ''}>
                 <Button onClick={deleteTaskHandler}>X</Button>
                 <input type="checkbox" checked={task.isDone} onChange={changeTaskStatusHandler} />
                 <span>{task.title}</span>
@@ -71,9 +79,24 @@ export const TodolistItem = ({
         </ul>
       )}
       <div>
-        <Button onClick={() => changeFilter('all')}>All</Button>
-        <Button onClick={() => changeFilter('active')}>Active</Button>
-        <Button onClick={() => changeFilter('completed')}>Completed</Button>
+        <Button
+          className={filter === 'all' ? 'active-filter' : ''}
+          onClick={() => changeFilter('all')}
+        >
+          All
+        </Button>
+        <Button
+          className={filter === 'active' ? 'active-filter' : ''}
+          onClick={() => changeFilter('active')}
+        >
+          Active
+        </Button>
+        <Button
+          className={filter === 'completed' ? 'active-filter' : ''}
+          onClick={() => changeFilter('completed')}
+        >
+          Completed
+        </Button>
       </div>
     </div>
   )
