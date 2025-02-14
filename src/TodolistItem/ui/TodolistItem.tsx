@@ -9,6 +9,7 @@ type Props = {
   changeFilter: (todolistId: string, filter: FilterValues) => void
   createTask: (todolistId: string, title: string) => void
   changeTaskStatus: (todolistId: string, taskId: string, isDone: boolean) => void
+  deleteTodolist: (todolistId: string) => void
 }
 
 export const TodolistItem = ({
@@ -18,10 +19,11 @@ export const TodolistItem = ({
   changeFilter,
   createTask,
   changeTaskStatus,
+  deleteTodolist,
 }: Props) => {
   const [taskTitle, setTaskTitle] = useState<string>('')
   const [error, setError] = useState<string | null>(null)
-  debugger
+
   const changeTaskTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
     setTaskTitle(event.currentTarget.value)
     setError(null)
@@ -47,9 +49,16 @@ export const TodolistItem = ({
     changeFilter(id, filter)
   }
 
+  const deleteTodolistHandler = () => {
+    deleteTodolist(id)
+  }
+
   return (
     <div>
-      <h3>{title}</h3>
+      <div className={'container'}>
+        <h3>{title}</h3>
+        <Button onClick={deleteTodolistHandler}>X</Button>
+      </div>
       <div>
         <input
           onChange={changeTaskTitleHandler}

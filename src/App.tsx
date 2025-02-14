@@ -38,6 +38,12 @@ export const App = () => {
     ],
   })
 
+  const deleteTodolist = (todolistId: string) => {
+    setTodolists(todolists.filter(todolist => todolist.id !== todolistId))
+    delete tasks[todolistId]
+    setTasks({ ...tasks })
+  }
+
   const deleteTask = (todolistId: string, taskId: string) => {
     setTasks({ ...tasks, [todolistId]: tasks[todolistId].filter(task => task.id !== taskId) })
   }
@@ -77,7 +83,6 @@ export const App = () => {
           filteredTasks = todolistTasks.filter(task => task.isDone)
         }
 
-        debugger
         return (
           <TodolistItem
             key={todolist.id}
@@ -87,6 +92,7 @@ export const App = () => {
             changeFilter={changeFilter}
             createTask={createTask}
             changeTaskStatus={changeTaskStatus}
+            deleteTodolist={deleteTodolist}
           />
         )
       })}
