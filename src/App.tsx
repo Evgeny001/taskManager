@@ -2,6 +2,7 @@ import './App.css'
 import { TodolistItem } from './TodolistItem/ui/TodolistItem.tsx'
 import { useState } from 'react'
 import { v1 } from 'uuid'
+import { CreateItemForm } from './CreateItemForm/ui/CreateItemForm.tsx'
 
 export interface Todolist {
   id: string
@@ -62,6 +63,17 @@ export const App = () => {
     setTasks({ ...tasks, [todolistId]: [newTask, ...tasks[todolistId]] })
   }
 
+  const createTodolist = (title: string) => {
+    const id = v1()
+    const newTodolist: Todolist = {
+      id,
+      title,
+      filter: 'all',
+    }
+    setTodolists([newTodolist, ...todolists])
+    setTasks({ ...tasks, [id]: [] })
+  }
+
   const changeTaskStatus = (todolistId: string, taskId: string, isDone: boolean) => {
     setTasks({
       ...tasks,
@@ -73,6 +85,10 @@ export const App = () => {
 
   return (
     <div className="app">
+      <>
+        <CreateItemForm onCreateItem={createTodolist} />
+      </>
+
       {todolists.map(todolist => {
         const todolistTasks = tasks[todolist.id]
         let filteredTasks = todolistTasks

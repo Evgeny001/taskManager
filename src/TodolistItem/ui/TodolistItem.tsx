@@ -1,6 +1,7 @@
 import { FilterValues, Task, Todolist } from '../../App.tsx'
 import { Button } from '../../shared/ui/Button/Button.tsx'
-import { ChangeEvent, useState, type KeyboardEvent } from 'react'
+import { ChangeEvent } from 'react'
+import { CreateItemForm } from '../../CreateItemForm/ui/CreateItemForm.tsx'
 
 type Props = {
   todolists: Todolist
@@ -21,36 +22,16 @@ export const TodolistItem = ({
   changeTaskStatus,
   deleteTodolist,
 }: Props) => {
-  const [taskTitle, setTaskTitle] = useState<string>('')
-  const [error, setError] = useState<string | null>(null)
-
-  const changeTaskTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    setTaskTitle(event.currentTarget.value)
-    setError(null)
-  }
-
-  const createTaskHandler = () => {
-    const trimmedTitle = taskTitle.trim()
-    if (trimmedTitle !== '') {
-      createTask(id, trimmedTitle)
-      setTaskTitle('')
-    } else {
-      setError('Title is required')
-    }
-  }
-
-  const createTaskOnEnterHandler = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      createTaskHandler()
-    }
-  }
-
   const changeFilterHandler = (filter: FilterValues) => {
     changeFilter(id, filter)
   }
 
   const deleteTodolistHandler = () => {
     deleteTodolist(id)
+  }
+
+  const createTaskHandler = (title: string) => {
+    createTask(id, title)
   }
 
   return (
@@ -60,14 +41,7 @@ export const TodolistItem = ({
         <Button onClick={deleteTodolistHandler}>X</Button>
       </div>
       <div>
-        <input
-          onChange={changeTaskTitleHandler}
-          value={taskTitle}
-          onKeyDown={createTaskOnEnterHandler}
-          className={error ? 'error' : ''}
-        />
-        <button onClick={createTaskHandler}>+</button>
-        {error && <div className={'error-message'}>{error}</div>}
+        <CreateItemForm onCreateItem={createTaskHandler} />
       </div>
       {tasks.length === 0 ? (
         'Тасок нет'
