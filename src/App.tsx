@@ -5,12 +5,13 @@ import { v1 } from 'uuid'
 import { CreateItemForm } from './CreateItemForm/ui/CreateItemForm.tsx'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
-import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid2'
 import { Paper } from '@mui/material'
+import { containerSx } from './TodolistItem/ui/TodolistItem.styles.ts'
+import { NavButton } from './shared/ui/NavButton/NavButton.ts'
 
 export interface Todolist {
   id: string
@@ -108,11 +109,15 @@ export const App = () => {
     <div className="app">
       <AppBar position="static" sx={{ mb: '30px' }}>
         <Toolbar>
-          <Container maxWidth={'lg'}>
+          <Container maxWidth={'lg'} sx={containerSx}>
             <IconButton color="inherit">
               <MenuIcon />
             </IconButton>
-            <Button color="inherit">Sign in</Button>
+            <div>
+              <NavButton>Sign in</NavButton>
+              <NavButton>Sign up</NavButton>
+              <NavButton background={'dodgerblue'}>Faq</NavButton>
+            </div>
           </Container>
         </Toolbar>
       </AppBar>
