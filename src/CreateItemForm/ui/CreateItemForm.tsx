@@ -1,5 +1,6 @@
 import { ChangeEvent, type KeyboardEvent, useState } from 'react'
 import Button from '@mui/material/Button'
+import { TextField } from '@mui/material'
 
 type Props = {
   onCreateItem: (title: string) => void
@@ -8,7 +9,7 @@ export const CreateItemForm = ({ onCreateItem }: Props) => {
   const [title, setTitle] = useState('')
   const [error, setError] = useState<string | null>(null)
 
-  const changeItemTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
+  const changeTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.currentTarget.value)
     setError(null)
   }
@@ -31,16 +32,20 @@ export const CreateItemForm = ({ onCreateItem }: Props) => {
 
   return (
     <div>
-      <input
-        className={error ? 'error' : ''}
+      <TextField
+        label={'Enter a title'}
+        variant={'outlined'}
         value={title}
-        onChange={changeItemTitleHandler}
+        size={'small'}
+        error={!!error}
+        helperText={error}
+        onChange={changeTitleHandler}
         onKeyDown={createItemOnEnterHandler}
       />
+
       <Button variant="contained" onClick={createItemHandler}>
         +
       </Button>
-      {error && <div className={'error-message'}>{error}</div>}
     </div>
   )
 }
