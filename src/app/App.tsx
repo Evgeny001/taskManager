@@ -26,6 +26,8 @@ import {
 } from '../model/tasks-reducer.ts'
 import { useAppSelector } from '../common/hooks/useAppSelector.ts'
 import { useAppDispatch } from '../common/hooks/useAppDispatch.ts'
+import { selectTodolists } from '../model/todolists-selectors.ts'
+import { selectTasks } from '../model/tasks-selectors.ts'
 
 export interface Todolist {
   id: string
@@ -39,6 +41,7 @@ export type Task = {
 }
 
 export type TasksState = Record<string, Task[]>
+
 export type FilterValues = 'all' | 'active' | 'completed'
 
 type ThemeMode = 'dark' | 'light'
@@ -46,9 +49,8 @@ type ThemeMode = 'dark' | 'light'
 export const App = () => {
   const dispatch = useAppDispatch()
 
-  const todolists = useAppSelector(state => state.todolists)
-
-  const tasks = useAppSelector(state => state.tasks)
+  const todolists = useAppSelector(selectTodolists)
+  const tasks = useAppSelector(selectTasks)
 
   const [themeMode, setThemeMode] = useState<ThemeMode>('light')
 
@@ -66,8 +68,7 @@ export const App = () => {
   }
 
   const deleteTodolist = (todolistId: string) => {
-    const action = deleteTodolistAC(todolistId)
-    dispatch(action)
+    dispatch(deleteTodolistAC({ id: todolistId }))
   }
 
   const deleteTask = (todolistId: string, taskId: string) => {
