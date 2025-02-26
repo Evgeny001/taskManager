@@ -1,6 +1,5 @@
 import './App.css'
 import { TodolistItem } from '../TodolistItem/ui/TodolistItem.tsx'
-import { useState } from 'react'
 import { CreateItemForm } from '../CreateItemForm/ui/CreateItemForm.tsx'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
@@ -8,7 +7,7 @@ import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid2'
-import { createTheme, Paper, Switch, ThemeProvider } from '@mui/material'
+import { Paper, Switch, ThemeProvider } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
 import { containerSx } from '../TodolistItem/ui/TodolistItem.styles.ts'
 import { NavButton } from '../shared/ui/NavButton/NavButton.ts'
@@ -28,6 +27,9 @@ import { useAppSelector } from '../common/hooks/useAppSelector.ts'
 import { useAppDispatch } from '../common/hooks/useAppDispatch.ts'
 import { selectTodolists } from '../model/todolists-selectors.ts'
 import { selectTasks } from '../model/tasks-selectors.ts'
+import { selectThemeMode } from './app-selectors.ts'
+import { changeThemeModeAC } from './app-reducer.ts'
+import { getTheme } from '../common/theme/theme.ts'
 
 export interface Todolist {
   id: string
@@ -44,27 +46,18 @@ export type TasksState = Record<string, Task[]>
 
 export type FilterValues = 'all' | 'active' | 'completed'
 
-type ThemeMode = 'dark' | 'light'
-
 export const App = () => {
   const dispatch = useAppDispatch()
 
   const todolists = useAppSelector(selectTodolists)
   const tasks = useAppSelector(selectTasks)
 
-  const [themeMode, setThemeMode] = useState<ThemeMode>('light')
+  const themeMode = useAppSelector(selectThemeMode)
 
-  const theme = createTheme({
-    palette: {
-      mode: themeMode,
-      primary: {
-        main: '#087EA4',
-      },
-    },
-  })
+  const theme = getTheme(themeMode)
 
   const changeMode = () => {
-    setThemeMode(themeMode === 'light' ? 'dark' : 'light')
+    dispatch(changeThemeModeAC({ themeMode: themeMode === 'light' ? 'dark' : 'light' }))
   }
 
   const deleteTodolist = (todolistId: string) => {
