@@ -1,6 +1,5 @@
 import { createTodolistAC, deleteTodolistAC } from './todolists-reducer.ts'
 import { createAction, createReducer, nanoid } from '@reduxjs/toolkit'
-import { TasksState } from '@/model/tasks-selectors.ts'
 
 const initialState: TasksState = {}
 
@@ -58,3 +57,5 @@ export type Task = {
   title: string
   isDone: boolean
 }
+
+export type TasksState = Record<string, Task[]>

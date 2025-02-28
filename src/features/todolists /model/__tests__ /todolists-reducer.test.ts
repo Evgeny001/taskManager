@@ -5,7 +5,7 @@ import {
   deleteTodolistAC,
   Todolist,
   todolistsReducer,
-} from './todolists-reducer.ts'
+} from '../todolists-reducer.ts'
 import { expect, beforeEach, test } from 'vitest'
 import { nanoid } from '@reduxjs/toolkit'
 

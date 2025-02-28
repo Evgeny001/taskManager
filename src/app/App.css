@@ -23,8 +23,3 @@
 .is-done {
   opacity: 0.3;
 }
-
-.container {
-  display: flex;
-  align-items: center;
-}
