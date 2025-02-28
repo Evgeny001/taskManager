@@ -1,9 +1,9 @@
-import { Todolist } from '../app/App.tsx'
 import {
   changeTodolistFilterAC,
   changeTodolistTitleAC,
   createTodolistAC,
   deleteTodolistAC,
+  Todolist,
   todolistsReducer,
 } from './todolists-reducer.ts'
 import { expect, beforeEach, test } from 'vitest'
