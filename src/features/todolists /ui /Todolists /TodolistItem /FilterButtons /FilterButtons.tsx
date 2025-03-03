@@ -6,7 +6,7 @@ import {
   Todolist,
 } from '@/features/todolists /model/todolists-reducer.ts'
 import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts'
-import { containerSx } from '@/common/styles /container.styles.ts'
+import { containerSx } from '@/common/styles '
 
 type Props = {
   todolist: Todolist

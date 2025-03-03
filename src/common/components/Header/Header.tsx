@@ -8,9 +8,9 @@ import { Switch } from '@mui/material'
 import { changeThemeModeAC } from '@/app/app-reducer.ts'
 import { useAppSelector } from '@/common/hooks/useAppSelector.ts'
 import { selectThemeMode } from '@/app/app-selectors.ts'
-import { getTheme } from '@/common/theme/theme.ts'
+import { getTheme } from '@/common/theme'
 import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts'
-import { containerSx } from '@/common/styles /container.styles.ts'
+import { containerSx } from '@/common/styles '
 
 export const Header = () => {
   const themeMode = useAppSelector(selectThemeMode)
