@@ -3,13 +3,24 @@ import Checkbox from '@mui/material/Checkbox'
 import { CreateItemForm, EditableSpan } from '@/common/components'
 import { Todolist } from '@/features/todolists /api/todolistsApi.types.ts'
 import { todolistsApi } from '@/features/todolists /api/todolistsApi.ts'
+import { tasksApi } from '@/features/todolists /api/tasksApi.ts'
+import { DomainTask, UpdateTaskModel } from '@/features/todolists /api/tasksApi.types.ts'
+import { TaskStatus } from '@/common/enums '
 
 export const AppHttpRequests = () => {
   const [todolists, setTodolists] = useState<Todolist[]>([])
-  const [tasks, setTasks] = useState<any>({})
+  const [tasks, setTasks] = useState<Record<string, DomainTask[]>>({})
 
   useEffect(() => {
-    todolistsApi.getTodolists().then(res => setTodolists(res.data))
+    todolistsApi.getTodolists().then(res => {
+      const todolists = res.data
+      setTodolists(todolists)
+      todolists.forEach(todolist => {
+        tasksApi.getTasks(todolist.id).then(res => {
+          setTasks(prevTasksState => ({ ...prevTasksState, [todolist.id]: res.data.items }))
+        })
+      })
+    })
   }, [])
 
   const createTodolist = (title: string) => {
@@ -35,13 +46,56 @@ export const AppHttpRequests = () => {
     })
   }
 
-  const createTask = (todolistId: string, title: string) => {}
+  const createTask = (todolistId: string, title: string) => {
+    tasksApi.createTask({ todolistId, title }).then(res => {
+      const newTask = res.data.data.item
+      setTasks({ ...tasks, [todolistId]: [newTask, ...tasks[todolistId]] })
+    })
+  }
 
-  const deleteTask = (todolistId: string, taskId: string) => {}
+  const deleteTask = (todolistId: string, taskId: string) => {
+    tasksApi
+      .deleteTask({ todolistId, taskId })
+      .then(() =>
+        setTasks({ ...tasks, [todolistId]: tasks[todolistId].filter(task => task.id !== taskId) })
+      )
+  }
 
-  const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>, task: any) => {}
+  const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>, task: DomainTask) => {
+    const todolistId = task.todoListId
+    const model: UpdateTaskModel = {
+      description: task.description,
+      title: task.title,
+      priority: task.priority,
+      startDate: task.startDate,
+      deadline: task.deadline,
+      status: e.target.checked ? TaskStatus.Completed : TaskStatus.New,
+    }
+    tasksApi.updateTask({ todolistId, taskId: task.id, model }).then(() => {
+      setTasks({
+        ...tasks,
+        [todolistId]: tasks[todolistId].map(t => (t.id === task.id ? { ...t, ...model } : t)),
+      })
+    })
+  }
 
-  const changeTaskTitle = (task: any, title: string) => {}
+  const changeTaskTitle = (task: any, title: string) => {
+    const todolistId = task.todoListId
+    const model: UpdateTaskModel = {
+      description: task.description,
+      title,
+      priority: task.priority,
+      startDate: task.startDate,
+      deadline: task.deadline,
+      status: task.status,
+    }
+    tasksApi.updateTask({ todolistId, taskId: task.id, model }).then(() => {
+      setTasks({
+        ...tasks,
+        [todolistId]: tasks[todolistId].map(t => (t.id === task.id ? { ...t, ...model } : t)),
+      })
+    })
+  }
 
   return (
     <div style={{ margin: '20px' }}>
@@ -56,9 +110,12 @@ export const AppHttpRequests = () => {
             <button onClick={() => deleteTodolist(todolist.id)}>x</button>
           </div>
           <CreateItemForm onCreateItem={title => createTask(todolist.id, title)} />
-          {tasks[todolist.id]?.map((task: any) => (
+          {tasks[todolist.id]?.map(task => (
             <div key={task.id}>
-              <Checkbox checked={task.isDone} onChange={e => changeTaskStatus(e, task)} />
+              <Checkbox
+                checked={task.status === TaskStatus.Completed}
+                onChange={e => changeTaskStatus(e, task)}
+              />
               <EditableSpan value={task.title} onChange={title => changeTaskTitle(task, title)} />
               <button onClick={() => deleteTask(todolist.id, task.id)}>x</button>
             </div>

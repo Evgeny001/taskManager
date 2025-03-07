@@ -4,7 +4,7 @@ import { Todolist } from '@/features/todolists /api/todolistsApi.types.ts'
 
 export const todolistsApi = {
   getTodolists() {
-    return instance.get('/todo-lists')
+    return instance.get<Todolist[]>('/todo-lists')
   },
   createTodolist(title: string) {
     return instance.post<BaseResponse<{ item: Todolist }>>('/todo-lists', { title })
