@@ -3,7 +3,7 @@ import {
   DomainTask,
   GetTasksResponse,
   UpdateTaskModel,
-} from '@/features/todolists /api/tasksApi.types.ts'
+} from '@/features/todolists/api/tasksApi.types.ts'
 import { BaseResponse } from '@/common/types'
 
 export const tasksApi = {

@@ -4,13 +4,13 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import {
   changeTodolistTitleAC,
   deleteTodolistAC,
-  Todolist,
-} from '@/features/todolists /model/todolists-reducer.ts'
+  DomainTodolist,
+} from '@/features/todolists/model/todolistsSlice.ts'
 import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts'
 import cls from './TodolistTitle.module.css'
 
 type Props = {
-  todolist: Todolist
+  todolist: DomainTodolist
 }
 
 export const TodolistTitle = ({ todolist }: Props) => {

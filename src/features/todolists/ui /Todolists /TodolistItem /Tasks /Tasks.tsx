@@ -1,11 +1,11 @@
-import { Todolist } from '@/features/todolists /model/todolists-reducer.ts'
 import { List } from '@mui/material'
 import { useAppSelector } from '@/common/hooks/useAppSelector.ts'
-import { selectTasks } from '@/features/todolists /model/tasks-selectors.ts'
-import { TaskItem } from '@/features/todolists /ui /Todolists /TodolistItem /Tasks /TaskItem /TaskItem.tsx'
+import { selectTasks } from '@/features/todolists/model/tasks-selectors.ts'
+import { TaskItem } from '@/features/todolists/ui /Todolists /TodolistItem /Tasks /TaskItem /TaskItem.tsx'
+import { DomainTodolist } from '@/features/todolists/model/todolistsSlice.ts'
 
 type Props = {
-  todolist: Todolist
+  todolist: DomainTodolist
 }
 
 export const Tasks = ({ todolist }: Props) => {
