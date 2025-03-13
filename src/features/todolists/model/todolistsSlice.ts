@@ -1,8 +1,9 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk } from '@reduxjs/toolkit'
 import { Todolist } from '../api/todolistsApi.types.ts'
 import { todolistsApi } from '@/features/todolists/api/todolistsApi.ts'
+import { createAppSlice } from '@/common/utils'
 
-export const todolistsSlice = createSlice({
+export const todolistsSlice = createAppSlice({
   name: 'todolistsSlice',
   initialState: [] as DomainTodolist[],
   selectors: {
@@ -17,15 +18,26 @@ export const todolistsSlice = createSlice({
         }
       }
     ),
+    fetchTodolistsTC: create.asyncThunk(
+      async (_, thunkApi) => {
+        try {
+          const res = await todolistsApi.getTodolists()
+          return { todolists: res.data }
+        } catch (error) {
+          return thunkApi.rejectWithValue(null)
+        }
+      },
+      {
+        fulfilled: (state, action) => {
+          action.payload?.todolists.forEach(tl => {
+            state.push({ ...tl, filter: 'all' })
+          })
+        },
+      }
+    ),
   }),
   extraReducers: builder => {
     builder
-      .addCase(fetchTodolistsTC.fulfilled, (state, action) => {
-        action.payload?.todolists.forEach(tl => {
-          state.push({ ...tl, filter: 'all' })
-        })
-      })
-      .addCase(fetchTodolistsTC.rejected, () => {})
       .addCase(changeTodolistTitleTC.fulfilled, (state, action) => {
         const index = state.findIndex(todolist => todolist.id === action.payload.id)
         if (index !== -1) {
@@ -43,18 +55,6 @@ export const todolistsSlice = createSlice({
       })
   },
 })
-
-export const fetchTodolistsTC = createAsyncThunk(
-  `${todolistsSlice.name}/fetchTodolistsTC`,
-  async (_, thunkAPI) => {
-    try {
-      const res = await todolistsApi.getTodolists()
-      return { todolists: res.data }
-    } catch (error) {
-      return thunkAPI.rejectWithValue(null)
-    }
-  }
-)
 
 export const changeTodolistTitleTC = createAsyncThunk(
   `${todolistsSlice.name}/changeTodolistTitleTC`,
@@ -93,7 +93,7 @@ export const deleteTodolistTC = createAsyncThunk(
 )
 
 export const todolistsReducer = todolistsSlice.reducer
-export const { changeTodolistFilterAC } = todolistsSlice.actions
+export const { changeTodolistFilterAC, fetchTodolistsTC } = todolistsSlice.actions
 export const { selectTodolists } = todolistsSlice.selectors
 
 export type FilterValues = 'all' | 'active' | 'completed'

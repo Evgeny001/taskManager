@@ -1,8 +1,9 @@
 import { beforeEach, expect, test } from 'vitest'
 import {
   changeTaskStatusAC,
+  changeTaskStatusTC,
   changeTaskTitleAC,
-  createTaskAC,
+  createTaskTC,
   deleteTaskAC,
   tasksReducer,
   TasksState,
@@ -70,7 +71,7 @@ test('correct task should be deleted', () => {
 test('correct task should be created at correct array', () => {
   const endState = tasksReducer(
     startState,
-    createTaskAC({ todolistId: 'todolistId2', title: 'Hi' })
+    createTaskTC.fulfilled({ todolistId: 'todolistId2', title: 'Hi' })
   )
   expect(endState['todolistId1'].length).toBe(3)
   expect(endState['todolistId2'].length).toBe(4)
@@ -81,7 +82,7 @@ test('correct task should be created at correct array', () => {
 test('correct task should change its status', () => {
   const endState = tasksReducer(
     startState,
-    changeTaskStatusAC({ todolistId: 'todolistId2', taskId: '2', isDone: false })
+    changeTaskStatusTC({ todolistId: 'todolistId2', taskId: '2', isDone: false })
   )
   const task = endState['todolistId2'].find(task => task.id === '2')
   expect(task?.isDone).toBe(false)
